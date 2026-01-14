@@ -56,7 +56,24 @@ async def main():
         allow_delegation=False
     )
 
-    
+    # define task 
+
+def scrape_task(url: str, agent: Agent):
+    return Task(
+        description=(f"Scrape the website at {url} using FirecrawlScrapeWebsiteTool."
+                     "Extract the main content, headings, and any relevant metadata. filtering out ads and navigation elements."),
+        expected_output="Extracted content from the website.",
+        agent=agent,
+    ) 
+
+def summarize_task(content: str, agent: Agent):
+    return Task(
+        description=(f"Summarize the extracted content.{content}."
+                     "Provide a concise summary highlighting the key points and main ideas."),
+        expected_output=("A concise summary of the content."
+                         "Ensure the summary is clear and captures the essence of the original text."),
+        agent=agent,
+    )
 
 
 if __name__ == "__main__":
