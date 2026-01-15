@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# llm = LLM(model="ollama/olmo-3:7b", temperature=0.7, max_tokens=512, base_url="http://localhost:11434")
-llm = ChatOllama(model="olmo-3:7b", base_url="http://localhost:11434", temperature=0.7, max_tokens=512)
+llm = LLM(model="gemini/gemini-2.0-flash", temperature=0.7, max_tokens=512, api_key=os.getenv("GEMENI_API"))
+# llm = ChatOllama(model="olmo-3:7b", base_url="http://localhost:11434", temperature=0.7, max_tokens=512)
 # response = await llm.acall('what is the capital of Nepal?')
 # prompt = "what is the capital of Nepal?"
 # # print(response.text)
@@ -78,14 +78,14 @@ def summarize_task(content: str, agent: Agent):
 
 # create a crew with the agents
 def crew_process(url: str, scrape_agent: Agent, summarizer_agent: Agent):
-    scrape_task = scrape_task(url, scrape_agent)
-    summarize_task = summarize_task(scrape_task, summarizer_agent)
+    scrape_task_ = scrape_task(url, scrape_agent)
+    summarize_task_ = summarize_task(scrape_task_, summarizer_agent)
 
     crew = Crew(
         agents=[scrape_agent, summarizer_agent],
-        tasks=[scrape_task, summarize_task],
+        tasks=[scrape_task_, summarize_task_],
         verbose=True,
-        process=Process.SEQUENTIAL
+        process=Process.sequential
     )
 
     return crew 
