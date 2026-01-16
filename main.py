@@ -1,15 +1,22 @@
 import os 
 from crewai import Agent, Crew, Process, Task, LLM
 import asyncio
-from langchain_ollama import ChatOllama
+
 from crewai_tools import FirecrawlScrapeWebsiteTool 
 from dotenv import load_dotenv
 
+from langchain_openai import ChatOpenAI
+
+
 load_dotenv()
 
+os.getenv("OPENAI_API_KEY")
 
-llm = LLM(model="gemini/gemini-2.0-flash", temperature=0.7, max_tokens=512, api_key=os.getenv("GEMENI_API"))
+# llm = LLM(model="gemini/gemini-2.0-flash", temperature=0.7, max_tokens=512, api_key=os.getenv("GEMENI_API"))
 # llm = ChatOllama(model="olmo-3:7b", base_url="http://localhost:11434", temperature=0.7, max_tokens=512)
+# Using mistral:latest as it's more capable for tool calling and CrewAI integration
+llm = LLM(model="ollama/mistral:latest", temperature=0.7, base_url="http://localhost:11434")
+# llm = ChatOpenAI(model_name="olmo-3:7b", temperature=0.7, max_tokens=512, base_url="http://localhost:11434")
 # response = await llm.acall('what is the capital of Nepal?')
 # prompt = "what is the capital of Nepal?"
 # # print(response.text)
@@ -39,9 +46,9 @@ scrape_agent = Agent(
     backstory="You are an expert web scraper with access to Firecrawl.",
     llm=llm,
     tools=tools,
-    Verbose=True, 
-    allow_delegation=False
-
+    verbose=True, 
+    allow_delegation=False,
+    use_system_prompt=False  # Disable to avoid LLM compatibility issues
 )
 
 
@@ -53,7 +60,8 @@ agent_summarizer = Agent(
     backstory="You are an expert summarizer.",
     llm=llm,
     verbose=True,
-    allow_delegation=False
+    allow_delegation=False,
+    use_system_prompt=False  # Disable to avoid LLM compatibility issues
 )
 
 # define task 
@@ -91,10 +99,13 @@ def crew_process(url: str, scrape_agent: Agent, summarizer_agent: Agent):
     return crew 
 
 
-
+def summarize_content(url:str):
+    crew = crew_process(url, scrape_agent, agent_summarizer)
+    res = crew.kickoff()
+    return res.raw
 
 if __name__ == "__main__":
-    url = 'https://ekantipur.com/'
-    crew = crew_process(url, scrape_agent, agent_summarizer)
-     # run the crew
-    asyncio.run(crew.kickoff())
+    url = ['https://ekantipur.com/', 'https://sebastianraschka.com/llms-from-scratch/']
+    summary = summarize_content(url)
+    print("Final Summary:", summary)
+     
