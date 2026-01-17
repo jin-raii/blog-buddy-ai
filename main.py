@@ -5,31 +5,12 @@ import asyncio
 from crewai_tools import FirecrawlScrapeWebsiteTool 
 from dotenv import load_dotenv
 
-from langchain_openai import ChatOpenAI
-
 
 load_dotenv()
 
 os.getenv("OPENAI_API_KEY")
 
-# llm = LLM(model="gemini/gemini-2.0-flash", temperature=0.7, max_tokens=512, api_key=os.getenv("GEMENI_API"))
-# llm = ChatOllama(model="olmo-3:7b", base_url="http://localhost:11434", temperature=0.7, max_tokens=512)
-# Using mistral:latest as it's more capable for tool calling and CrewAI integration
 llm = LLM(model="ollama/mistral:latest", temperature=0.7, base_url="http://localhost:11434")
-# llm = ChatOpenAI(model_name="olmo-3:7b", temperature=0.7, max_tokens=512, base_url="http://localhost:11434")
-# response = await llm.acall('what is the capital of Nepal?')
-# prompt = "what is the capital of Nepal?"
-# # print(response.text)
-# message = [
-#     ('system', 'You are a helpful assistant.'),
-#     ('user', prompt)
-# ]
-# response = llm.invoke(message)
-# stream = llm.stream(response.content)
-# full = next(stream)
-# for chunk in stream:
-#     full += chunk
-# print(full, end='', flush=True)
 
 tools = [
     FirecrawlScrapeWebsiteTool(
@@ -61,7 +42,7 @@ agent_summarizer = Agent(
     llm=llm,
     verbose=True,
     allow_delegation=False,
-    use_system_prompt=False  # Disable to avoid LLM compatibility issues
+    use_system_prompt=False  
 )
 
 # define task 
@@ -69,7 +50,7 @@ agent_summarizer = Agent(
 def scrape_task(url: str, agent: Agent):
     return Task(
         description=(f"Scrape the website at {url} using FirecrawlScrapeWebsiteTool."
-                    "Extract the main content, headings, and any relevant metadata. filtering out ads and navigation elements."),
+                    " Extract the main content, headings, and any relevant metadata. filtering out ads and navigation elements."),
         expected_output="Extracted content from the website.",
         agent=agent,
     ) 
@@ -104,8 +85,8 @@ def summarize_content(url:str):
     res = crew.kickoff()
     return res.raw
 
-if __name__ == "__main__":
-    url = ['https://ekantipur.com/', 'https://sebastianraschka.com/llms-from-scratch/']
-    summary = summarize_content(url)
-    print("Final Summary:", summary)
+# if __name__ == "__main__":
+#     url = ['https://ekantipur.com/', 'https://sebastianraschka.com/llms-from-scratch/']
+#     summary = summarize_content(url)
+#     print("Final Summary:", summary)
      
