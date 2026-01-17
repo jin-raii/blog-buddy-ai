@@ -7,10 +7,8 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-
-os.getenv("OPENAI_API_KEY")
-
-llm = LLM(model="ollama/mistral:latest", temperature=0.7, base_url="http://localhost:11434")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+llm = LLM(model="ollama/mistral:latest", temperature=0.7, base_url=OLLAMA_URL)
 
 tools = [
     FirecrawlScrapeWebsiteTool(
