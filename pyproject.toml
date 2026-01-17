@@ -7,6 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "crewai[google-genai]>=1.8.1",
     "firecrawl-py>=4.12.0",
+    "gradio>=6.3.0",
     "langchain-ollama>=0.3.10",
     "langchain-openai>=0.3.23",
+    "pocket-tts>=1.0.1",
 ]
