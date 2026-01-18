@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-llm = LLM(model="ollama/mistral:latest", temperature=0.7, base_url=OLLAMA_URL)
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral:latest")
+llm = LLM(model=f"ollama/{OLLAMA_MODEL}", temperature=0.7, base_url=OLLAMA_URL)
 
 tools = [
     FirecrawlScrapeWebsiteTool(
