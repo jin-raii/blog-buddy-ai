@@ -48,20 +48,36 @@ agent_summarizer = Agent(
 
 def scrape_task(url: str, agent: Agent):
     return Task(
-        description=(f"Scrape the website at {url} using FirecrawlScrapeWebsiteTool."
-                    " Extract the main content, headings, and any relevant metadata. filtering out ads and navigation elements."),
-        expected_output="Extracted content from the website.",
+        description=(
+            f"Scrape the website at {url} using FirecrawlScrapeWebsiteTool. "
+            "Extract only the main readable content of the page. "
+            "Include all meaningful headings (H1–H6) and relevant metadata such as "
+            "page title, meta description, author (if available), publish date, and canonical URL. "
+            "Exclude advertisements, navigation menus, footers, sidebars, pop-ups, and any non-content elements."
+        ),
+        expected_output=(
+            "A structured object containing:\n"
+            "- main_content: cleaned article or page text\n"
+            "- headings: a list of headings in order\n"
+            "- metadata: title, description, author, publish_date, canonical_url"
+        ),
         agent=agent,
-    ) 
+    )
+
 
 def summarize_task(content: str, agent: Agent):
     return Task(
-        description=(f"Summarize the extracted content.{content}."
-                    "Provide a concise summary highlighting the key points and main ideas."),
-        expected_output=("A concise summary of the content."
-                        "Ensure the summary is clear and captures the essence of the original text."),
+        description=(
+            "Summarize the provided content into a concise, well-structured summary. "
+            "Focus on the key ideas, main arguments, and essential information. "
+            "Avoid unnecessary details and repetition."
+        ),
+        expected_output=(
+            "A clear and concise summary capturing the core ideas of the content "
+            "in plain, readable language."
+        ),
         agent=agent,
-        context=[content]
+        context=[content],
     )
 
 # create a crew with the agents
