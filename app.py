@@ -23,7 +23,7 @@ def generate_audio(text, progress=gr.Progress()):
 def UI():
     with gr.Blocks() as demo:
         gr.Markdown("# Blog Summarizer")
-        url_input = gr.Textbox(label="Enter Blog URLs (comma separated)", placeholder="https://example.com")
+        url_input = gr.Textbox(label="Enter Blog URLs ", placeholder="https://example.com")
         summarize_button = gr.Button("Summarize")
         output_area = gr.Textbox(label="Summary Output", lines=20)
         
